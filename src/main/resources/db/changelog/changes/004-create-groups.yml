@@ -18,15 +18,3 @@ databaseChangeLog:
                   type: VARCHAR(255)
                   constraints:
                     nullable: false
-              - column:
-                  name: teacher_id
-                  type: BIGINT
-                  constraints:
-                    nullable: false
-        - addForeignKeyConstraint:
-            baseTableName: groups
-            baseColumnNames: teacher_id
-            constraintName: fk_groups_teacher
-            referencedTableName: teachers
-            referencedColumnNames: id
-            onDelete: RESTRICT
