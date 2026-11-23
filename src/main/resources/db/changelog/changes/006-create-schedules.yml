@@ -1,0 +1,82 @@
+databaseChangeLog:
+  - changeSet:
+      id: 006-create-schedules
+      author: dev
+      changes:
+        - createTable:
+            tableName: schedules
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: false
+              - column:
+                  name: group_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: teacher_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: course_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: start_time
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: end_time
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+
+        - addForeignKeyConstraint:
+            baseTableName: schedules
+            baseColumnNames: group_id
+            constraintName: fk_schedules_group
+            referencedTableName: groups
+            referencedColumnNames: id
+            onDelete: CASCADE
+
+        - addForeignKeyConstraint:
+            baseTableName: schedules
+            baseColumnNames: teacher_id
+            constraintName: fk_schedules_teacher
+            referencedTableName: teachers
+            referencedColumnNames: id
+            onDelete: RESTRICT
+
+        - addForeignKeyConstraint:
+            baseTableName: schedules
+            baseColumnNames: course_id
+            constraintName: fk_schedules_course
+            referencedTableName: courses
+            referencedColumnNames: id
+            onDelete: RESTRICT
+            
+        - createIndex:
+            indexName: idx_schedules_group_start_time
+            tableName: schedules
+            columns:
+              - column:
+                  name: group_id
+              - column:
+                  name: start_time
+
+        - createIndex:
+            indexName: idx_schedules_teacher_start_time
+            tableName: schedules
+            columns:
+              - column:
+                  name: teacher_id
+              - column:
+                  name: start_time
