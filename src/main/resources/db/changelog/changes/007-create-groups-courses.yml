@@ -19,7 +19,7 @@ databaseChangeLog:
         - addPrimaryKey:
             tableName: groups_courses
             columnNames: group_id, course_id
-            constraintName: pk_group_courses
+            constraintName: pk_groups_courses
 
         - addForeignKeyConstraint:
             baseTableName: groups_courses

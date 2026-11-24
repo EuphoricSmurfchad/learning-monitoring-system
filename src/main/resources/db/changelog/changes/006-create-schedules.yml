@@ -54,11 +54,11 @@ databaseChangeLog:
             referencedTableName: courses
             referencedColumnNames: id
             onDelete: RESTRICT
-            
+
         - addForeignKeyConstraint:
             baseTableName: schedules
             baseColumnNames: teacher_id
             constraintName: fk_schedules_teacher
-            referencedTableName: teacher
+            referencedTableName: teachers
             referencedColumnNames: id
             onDelete: RESTRICT

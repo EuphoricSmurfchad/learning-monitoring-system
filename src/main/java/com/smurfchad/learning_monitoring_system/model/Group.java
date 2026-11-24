@@ -38,7 +38,7 @@ public class Group {
 
     @ManyToMany 
     @JoinTable (
-        name = "group_courses",
+        name = "groups_courses",
         joinColumns = @JoinColumn (name = "group_id"),
         inverseJoinColumns = @JoinColumn (name = "course_id")
     )
