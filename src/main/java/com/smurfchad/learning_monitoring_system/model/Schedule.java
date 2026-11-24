@@ -34,10 +34,6 @@ public class Schedule {
     @JoinColumn (name = "course_id", nullable = false)
     private Course course;
 
-    @ManyToOne (fetch = FetchType.LAZY, optional = false)
-    @JoinColumn (name = "teacher_id", nullable = false)
-    private Teacher teacher;
-
     @Column (name = "start_time", nullable = false)
     private LocalDateTime startTime;
 

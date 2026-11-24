@@ -34,7 +34,6 @@ public class Student {
     @Column (name = "last_name", nullable = false)
     private String lastName;
 
-    @NotEmpty 
     @ManyToMany 
     @JoinTable (
         name = "students_groups",

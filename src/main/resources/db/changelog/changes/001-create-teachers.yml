@@ -1,6 +1,6 @@
 databaseChangeLog:
   - changeSet:
-      id: 002-create-teachers
+      id: 001-create-teachers
       author: dev
       changes:
         - createTable:

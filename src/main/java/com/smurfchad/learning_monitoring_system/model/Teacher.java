@@ -35,9 +35,6 @@ public class Teacher {
     private String lastName;
 
     @OneToMany (mappedBy = "teacher")
-    private List<Schedule> schedules = new ArrayList<>();
-
-    @OneToMany (mappedBy = "teacher")
     private List<Course> courses = new ArrayList<>();
 
     public void addCourse(Course course){
