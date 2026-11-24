@@ -51,7 +51,5 @@ databaseChangeLog:
             onDelete: RESTRICT
 
             
-        - addCheckConstraint:
-            tableName: schedules
-            constraintName: ck_schedules_time_order
-            checkCondition: end_time > start_time
+        - sql:
+            sql: ALTER TABLE schedules ADD CONSTRAINT ck_schedules_time_order CHECK (end_time > start_time)

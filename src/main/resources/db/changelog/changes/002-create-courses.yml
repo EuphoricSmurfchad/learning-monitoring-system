@@ -26,11 +26,10 @@ databaseChangeLog:
                   type: BIGINT
                   constraints:
                     nullable: false
-                    
-              - addForeignKeyConstraint:
-                  baseTableName: courses
-                  baseColumnNames: teacher_id
-                  constraintName: fk_courses_teacher
-                  referencedTableName: teachers
-                  referencedColumnNames: id
-                  onDelete: RESTRICT
+        - addForeignKeyConstraint:
+            baseTableName: courses
+            baseColumnNames: teacher_id
+            constraintName: fk_courses_teacher
+            referencedTableName: teachers
+            referencedColumnNames: id
+            onDelete: RESTRICT
