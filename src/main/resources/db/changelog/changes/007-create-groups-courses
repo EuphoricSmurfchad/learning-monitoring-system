@@ -1,10 +1,10 @@
 databaseChangeLog:
   - changeSet:
-      id: 005-create-groups-students
+      id: 007-create-groups-courses
       author: dev
       changes:
         - createTable:
-            tableName: groups_students
+            tableName: groups_courses
             columns:
               - column:
                   name: group_id
@@ -12,27 +12,27 @@ databaseChangeLog:
                   constraints:
                     nullable: false
               - column:
-                  name: student_id
+                  name: course_id
                   type: BIGINT
                   constraints:
                     nullable: false
         - addPrimaryKey:
-            tableName: groups_students
-            columnNames: group_id, student_id
-            constraintName: pk_groups_students
+            tableName: groups_courses
+            columnNames: group_id, course_id
+            constraintName: pk_group_courses
 
         - addForeignKeyConstraint:
-            baseTableName: groups_students
-            baseColumnNames: student_id
-            constraintName: fk_groups_students_student
-            referencedTableName: students
+            baseTableName: groups_courses
+            baseColumnNames: group_id
+            constraintName: fk_groups_courses_group
+            referencedTableName: groups
             referencedColumnNames: id
             onDelete: CASCADE
 
         - addForeignKeyConstraint:
-            baseTableName: groups_students
-            baseColumnNames: group_id
-            constraintName: fk_groups_students_group
-            referencedTableName: groups
+            baseTableName: groups_courses
+            baseColumnNames: course_id
+            constraintName: fk_groups_courses_courses
+            referencedTableName: courses
             referencedColumnNames: id
             onDelete: CASCADE

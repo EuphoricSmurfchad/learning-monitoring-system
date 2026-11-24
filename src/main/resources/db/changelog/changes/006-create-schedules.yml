@@ -24,6 +24,11 @@ databaseChangeLog:
                   constraints:
                     nullable: false
               - column:
+                  name: teacher_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
                   name: start_time
                   type: TIMESTAMP
                   constraints:
@@ -49,4 +54,11 @@ databaseChangeLog:
             referencedTableName: courses
             referencedColumnNames: id
             onDelete: RESTRICT
-      
+            
+        - addForeignKeyConstraint:
+            baseTableName: schedules
+            baseColumnNames: teacher_id
+            constraintName: fk_schedules_teacher
+            referencedTableName: teacher
+            referencedColumnNames: id
+            onDelete: RESTRICT
