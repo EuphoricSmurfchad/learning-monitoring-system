@@ -8,4 +8,6 @@ import com.smurfchad.learning_monitoring_system.model.Course;
 @Repository 
 public interface CourseRepository extends JpaRepository<Course, Long>{
 
+    boolean existsByTeacherId(Long teacherId);
+
 }
