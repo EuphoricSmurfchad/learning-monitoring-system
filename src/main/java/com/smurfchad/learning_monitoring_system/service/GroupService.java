@@ -45,8 +45,11 @@ public class GroupService {
 
     @Transactional
     public void deleteGroup(Long id) {
-        groupRepository.findById(id)
+        Group group = groupRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        if (!group.getStudents().isEmpty()){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
         groupRepository.deleteById(id);
     }
 
