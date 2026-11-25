@@ -17,6 +17,7 @@ import com.smurfchad.learning_monitoring_system.model.Group;
 
 import com.smurfchad.learning_monitoring_system.repository.CourseRepository;
 import com.smurfchad.learning_monitoring_system.repository.GroupRepository;
+import com.smurfchad.learning_monitoring_system.repository.ScheduleRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -27,6 +28,7 @@ public class GroupService {
     private final GroupMapper groupMapper;
     private final GroupRepository groupRepository;
     private final CourseRepository courseRepository;
+    private final ScheduleRepository scheduleRepository;
 
     @Transactional
     public ReturnGroupDto addGroup(GroupDto groupDto) {
@@ -48,7 +50,10 @@ public class GroupService {
         Group group = groupRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         if (!group.getStudents().isEmpty()){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+            throw new ResponseStatusException(HttpStatus.CONFLICT);
+        }
+        if (scheduleRepository.existsByGroupId(id)){
+            throw new ResponseStatusException(HttpStatus.CONFLICT);
         }
         groupRepository.deleteById(id);
     }
