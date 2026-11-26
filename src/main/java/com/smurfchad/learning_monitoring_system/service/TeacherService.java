@@ -3,10 +3,10 @@ package com.smurfchad.learning_monitoring_system.service;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.smurfchad.learning_monitoring_system.dto.teacher.ReturnTeacherDto;
+import com.smurfchad.learning_monitoring_system.dto.teacher.TeacherDtoResponse;
 import com.smurfchad.learning_monitoring_system.dto.teacher.TeacherDto;
 import com.smurfchad.learning_monitoring_system.dto.teacher.TeacherMapper;
-import com.smurfchad.learning_monitoring_system.exception.BusinessConflictException;
+import com.smurfchad.learning_monitoring_system.exception.BusinessException;
 import com.smurfchad.learning_monitoring_system.exception.ResourceNotFoundException;
 import com.smurfchad.learning_monitoring_system.model.Teacher;
 import com.smurfchad.learning_monitoring_system.repository.CourseRepository;
@@ -23,14 +23,14 @@ public class TeacherService {
     private final CourseRepository courseRepository;
 
     @Transactional
-    public ReturnTeacherDto addTeacher(TeacherDto teacherDto) {
+    public TeacherDtoResponse addTeacher(TeacherDto teacherDto) {
         Teacher teacher = teacherMapper.toEntity(teacherDto);
         Teacher savedTeacher = teacherRepository.save(teacher);
         return teacherMapper.toDto(savedTeacher);
     }
 
     @Transactional(readOnly = true)
-    public ReturnTeacherDto getTeacher(Long id) {
+    public TeacherDtoResponse getTeacher(Long id) {
         Teacher teacher = teacherRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Учитель с id " + id + " не найден"));
         return teacherMapper.toDto(teacher);
@@ -41,13 +41,13 @@ public class TeacherService {
         teacherRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Учитель с id " + id + " не найден"));
         if (courseRepository.existsByTeacherId(id)) {
-            throw new BusinessConflictException("У учителя есть курсы");
+            throw new BusinessException("У учителя есть курсы");
         }
         teacherRepository.deleteById(id);
     }
 
     @Transactional
-    public ReturnTeacherDto updateTeacher(Long id, TeacherDto teacherDto) {
+    public TeacherDtoResponse updateTeacher(Long id, TeacherDto teacherDto) {
         Teacher teacher = teacherRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Учитель с id " + id + " не найден"));
         teacher.setFirstName(teacherDto.firstName());

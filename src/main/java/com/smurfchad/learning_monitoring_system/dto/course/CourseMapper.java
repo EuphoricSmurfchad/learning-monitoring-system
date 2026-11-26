@@ -16,7 +16,7 @@ public interface CourseMapper {
     Course toEntity(CourseDto courseDto);
 
     @Mapping (target = "teacherId", source = "teacher")
-    ReturnCourseDto toDto(Course course);
+    CourseDtoResponse toDto(Course course);
 
     default Long mapTeacherToId(Teacher teacher){
         return teacher.getId();

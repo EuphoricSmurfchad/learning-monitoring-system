@@ -9,10 +9,10 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.smurfchad.learning_monitoring_system.dto.student.ReturnStudentDto;
+import com.smurfchad.learning_monitoring_system.dto.student.StudentDtoResponse;
 import com.smurfchad.learning_monitoring_system.dto.student.StudentDto;
 import com.smurfchad.learning_monitoring_system.dto.student.StudentMapper;
-import com.smurfchad.learning_monitoring_system.exception.BusinessConflictException;
+import com.smurfchad.learning_monitoring_system.exception.BusinessException;
 import com.smurfchad.learning_monitoring_system.exception.InvalidRequestException;
 import com.smurfchad.learning_monitoring_system.exception.ResourceNotFoundException;
 import com.smurfchad.learning_monitoring_system.model.Group;
@@ -31,7 +31,7 @@ public class StudentService {
     private final GroupRepository groupRepository;
 
     @Transactional
-    public ReturnStudentDto addStudent(StudentDto studentDto) {
+    public StudentDtoResponse addStudent(StudentDto studentDto) {
         Student student = studentMapper.toEntity(studentDto);
         Set<Long> idsInSet = studentDto.groupIds().stream()
                 .collect(Collectors.toSet());
@@ -52,7 +52,7 @@ public class StudentService {
     }
 
     @Transactional
-    public ReturnStudentDto updateStudent(Long id, StudentDto studentDto) {
+    public StudentDtoResponse updateStudent(Long id, StudentDto studentDto) {
         Student student = studentRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Студент с id " + id + " не найден"));
         student.setFirstName(studentDto.firstName());
@@ -71,14 +71,14 @@ public class StudentService {
     }
 
     @Transactional(readOnly = true)
-    public ReturnStudentDto getStudent(Long id) {
+    public StudentDtoResponse getStudent(Long id) {
         Student student = studentRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Студент с id " + id + " не найден"));
         return studentMapper.toDto(student);
     }
 
     @Transactional
-    public ReturnStudentDto addStudentAtGroup(Long studentId, Long groupId) {
+    public StudentDtoResponse addStudentAtGroup(Long studentId, Long groupId) {
         Student student = studentRepository.findById(studentId)
                 .orElseThrow(() -> new ResourceNotFoundException("Студент с id " + studentId + " не найден"));
         Group group = groupRepository.findById(groupId)
@@ -87,7 +87,7 @@ public class StudentService {
                 .map(Student::getId)
                 .toList();
         if (ids.contains(student.getId())) {
-            throw new BusinessConflictException("Студент уже в группе");
+            throw new BusinessException("Студент уже в группе");
         }
         student.addGroup(group);
         Student savedStudent = studentRepository.save(student);
@@ -95,7 +95,7 @@ public class StudentService {
     }
 
     @Transactional
-    public ReturnStudentDto removeStudentFromGroup(Long studentId, Long groupId) {
+    public StudentDtoResponse removeStudentFromGroup(Long studentId, Long groupId) {
         Student student = studentRepository.findById(studentId)
                 .orElseThrow(() -> new ResourceNotFoundException("Студент с id " + studentId + " не найден"));
         Group group = groupRepository.findById(groupId)
@@ -107,7 +107,7 @@ public class StudentService {
             throw new ResourceNotFoundException("Студент не найден в группе");
         }
         if (student.getGroups().size() == 1) {
-            throw new BusinessConflictException("Последняя группа у студента");
+            throw new BusinessException("Последняя группа у студента");
         }
         student.removeGroup(group);
         Student savedStudent = studentRepository.save(student);

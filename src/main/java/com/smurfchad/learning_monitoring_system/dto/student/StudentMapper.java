@@ -14,7 +14,7 @@ import com.smurfchad.learning_monitoring_system.model.Student;
 public interface StudentMapper {
 
     @Mapping(target = "groupIds", source = "groups")
-    ReturnStudentDto toDto(Student student);
+    StudentDtoResponse toDto(Student student);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "groups", ignore = true)

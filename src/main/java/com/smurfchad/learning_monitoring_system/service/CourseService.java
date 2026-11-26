@@ -8,8 +8,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.smurfchad.learning_monitoring_system.dto.course.CourseDto;
 import com.smurfchad.learning_monitoring_system.dto.course.CourseMapper;
-import com.smurfchad.learning_monitoring_system.dto.course.ReturnCourseDto;
-import com.smurfchad.learning_monitoring_system.exception.BusinessConflictException;
+import com.smurfchad.learning_monitoring_system.dto.course.CourseDtoResponse;
+import com.smurfchad.learning_monitoring_system.exception.BusinessException;
 import com.smurfchad.learning_monitoring_system.exception.ResourceNotFoundException;
 import com.smurfchad.learning_monitoring_system.model.Course;
 import com.smurfchad.learning_monitoring_system.model.Group;
@@ -30,7 +30,7 @@ public class CourseService {
     private final ScheduleRepository scheduleRepository;
 
     @Transactional
-    public ReturnCourseDto addCourse(CourseDto courseDto) {
+    public CourseDtoResponse addCourse(CourseDto courseDto) {
         Course course = courseMapper.toEntity(courseDto);
         Teacher teacher = teacherRepository.findById(courseDto.teacherId())
                 .orElseThrow(
@@ -41,7 +41,7 @@ public class CourseService {
     }
 
     @Transactional(readOnly = true)
-    public ReturnCourseDto getCourse(Long id) {
+    public CourseDtoResponse getCourse(Long id) {
         Course course = courseRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Курс с id " + id + "не найден"));
         return courseMapper.toDto(course);
@@ -52,7 +52,7 @@ public class CourseService {
         Course course = courseRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Курс с id " + id + "не найден"));
         if (scheduleRepository.existsByCourseId(id)) {
-            throw new BusinessConflictException("У курса есть занятия");
+            throw new BusinessException("У курса есть занятия");
         }
         Set<Group> coursesCopy = new HashSet<>(course.getGroups());
         coursesCopy.forEach(course::removeGroup);
@@ -60,7 +60,7 @@ public class CourseService {
     }
 
     @Transactional
-    public ReturnCourseDto updateCourse(Long id, CourseDto courseDto) {
+    public CourseDtoResponse updateCourse(Long id, CourseDto courseDto) {
         Course course = courseRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Курс с id " + id + "не найден"));
         course.setName(courseDto.name());

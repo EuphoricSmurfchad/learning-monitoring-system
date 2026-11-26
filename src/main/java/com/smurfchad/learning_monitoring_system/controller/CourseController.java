@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.smurfchad.learning_monitoring_system.dto.course.ReturnCourseDto;
+import com.smurfchad.learning_monitoring_system.dto.course.CourseDtoResponse;
 import com.smurfchad.learning_monitoring_system.dto.course.CourseDto;
 import com.smurfchad.learning_monitoring_system.service.CourseService;
 
@@ -29,20 +29,20 @@ public class CourseController {
     private final CourseService courseService;
 
     @PostMapping
-    public ResponseEntity<ReturnCourseDto> addCourse(@Valid @RequestBody CourseDto courseDto) {
-        ReturnCourseDto returnCourseDto = courseService.addCourse(courseDto);
+    public ResponseEntity<CourseDtoResponse> addCourse(@Valid @RequestBody CourseDto courseDto) {
+        CourseDtoResponse returnCourseDto = courseService.addCourse(courseDto);
         URI location = URI.create("/api/v1/courses/" + returnCourseDto.id());
         return ResponseEntity.created(location).body(returnCourseDto);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ReturnCourseDto> getCourse(@PathVariable Long id) {
+    public ResponseEntity<CourseDtoResponse> getCourse(@PathVariable Long id) {
         return ResponseEntity.ok(courseService.getCourse(id));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ReturnCourseDto> updateCourse(@PathVariable Long id, @Valid @RequestBody CourseDto courseDto) {
-        ReturnCourseDto returnCourseDto = courseService.updateCourse(id, courseDto);
+    public ResponseEntity<CourseDtoResponse> updateCourse(@PathVariable Long id, @Valid @RequestBody CourseDto courseDto) {
+        CourseDtoResponse returnCourseDto = courseService.updateCourse(id, courseDto);
         return ResponseEntity.ok(returnCourseDto);
     }
 

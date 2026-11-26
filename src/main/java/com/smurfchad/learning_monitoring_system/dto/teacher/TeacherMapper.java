@@ -14,7 +14,7 @@ import com.smurfchad.learning_monitoring_system.model.Teacher;
 public interface TeacherMapper {
 
     @Mapping(target = "courseIds", source = "courses")
-    ReturnTeacherDto toDto(Teacher teacher);
+    TeacherDtoResponse toDto(Teacher teacher);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "courses", ignore = true)

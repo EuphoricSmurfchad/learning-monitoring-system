@@ -6,6 +6,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import com.smurfchad.learning_monitoring_system.dto.error.ErrorResponse;
+
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -18,8 +20,8 @@ public class GlobalExceptionHandler {
 
     }
 
-    @ExceptionHandler(BusinessConflictException.class)
-    public ResponseEntity<ErrorResponse> handleBusinessConflict(BusinessConflictException ex) {
+    @ExceptionHandler(BusinessException.class)
+    public ResponseEntity<ErrorResponse> handleBusinessConflict(BusinessException ex) {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(new ErrorResponse(ex.getMessage()));
     }
 

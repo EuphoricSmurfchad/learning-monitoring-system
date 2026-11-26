@@ -2,7 +2,7 @@ package com.smurfchad.learning_monitoring_system.dto.schedule;
 
 import java.time.LocalDateTime;
 
-public record ReturnScheduleDto(
+public record ScheduleDtoResponse(
     Long id,
     Long groupId,
     Long courseId,

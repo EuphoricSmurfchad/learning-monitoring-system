@@ -22,7 +22,7 @@ public interface GroupMapper {
 
     @Mapping(target = "studentIds", source = "students")
     @Mapping(target = "courseIds", source = "courses")
-    ReturnGroupDto toDto(Group group);
+    GroupDtoResponse toDto(Group group);
 
     default List<Long> mapStudentsToIds(Set<Student> students) {
         return students.stream()

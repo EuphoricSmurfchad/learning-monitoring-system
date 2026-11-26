@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.smurfchad.learning_monitoring_system.dto.schedule.ReturnScheduleDto;
+import com.smurfchad.learning_monitoring_system.dto.schedule.ScheduleDtoResponse;
 import com.smurfchad.learning_monitoring_system.dto.schedule.ScheduleDto;
 import com.smurfchad.learning_monitoring_system.service.ScheduleService;
 
@@ -34,21 +34,21 @@ public class ScheduleController {
     private final ScheduleService scheduleService;
 
     @PostMapping
-    public ResponseEntity<ReturnScheduleDto> addSchedule(@Valid @RequestBody ScheduleDto scheduleDto) {
-        ReturnScheduleDto returnScheduleDto = scheduleService.addSchedule(scheduleDto);
+    public ResponseEntity<ScheduleDtoResponse> addSchedule(@Valid @RequestBody ScheduleDto scheduleDto) {
+        ScheduleDtoResponse returnScheduleDto = scheduleService.addSchedule(scheduleDto);
         URI location = URI.create("/api/v1/schedules/" + returnScheduleDto.id());
         return ResponseEntity.created(location).body(returnScheduleDto);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ReturnScheduleDto> getSchedule(@PathVariable Long id) {
+    public ResponseEntity<ScheduleDtoResponse> getSchedule(@PathVariable Long id) {
         return ResponseEntity.ok(scheduleService.getSchedule(id));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ReturnScheduleDto> updateSchedule(@PathVariable Long id,
+    public ResponseEntity<ScheduleDtoResponse> updateSchedule(@PathVariable Long id,
             @Valid @RequestBody ScheduleDto scheduleDto) {
-        ReturnScheduleDto returnScheduleDto = scheduleService.updateSchedule(id, scheduleDto);
+        ScheduleDtoResponse returnScheduleDto = scheduleService.updateSchedule(id, scheduleDto);
         return ResponseEntity.ok(returnScheduleDto);
     }
 
@@ -59,18 +59,18 @@ public class ScheduleController {
     }
 
     @GetMapping("/teachers/{id}")
-    public ResponseEntity<Page<ReturnScheduleDto>> findAllByTeacherId(@PathVariable Long id,
+    public ResponseEntity<Page<ScheduleDtoResponse>> findAllByTeacherId(@PathVariable Long id,
             @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("id").ascending());
-        Page<ReturnScheduleDto> schedules = scheduleService.findAllByCourseTeacherId(id, pageable);
+        Page<ScheduleDtoResponse> schedules = scheduleService.findAllByCourseTeacherId(id, pageable);
         return ResponseEntity.ok(schedules);
     }
 
     @GetMapping("/groups/{id}")
-    public ResponseEntity<Page<ReturnScheduleDto>> findAllByGroupId(@PathVariable Long id,
+    public ResponseEntity<Page<ScheduleDtoResponse>> findAllByGroupId(@PathVariable Long id,
             @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("id").ascending());    
-        Page<ReturnScheduleDto> schedules = scheduleService.findAllByGroupId(id, pageable);
+        Page<ScheduleDtoResponse> schedules = scheduleService.findAllByGroupId(id, pageable);
         return ResponseEntity.ok(schedules);
     }
 

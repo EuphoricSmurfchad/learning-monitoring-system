@@ -12,7 +12,7 @@ public interface ScheduleMapper {
 
     @Mapping (target = "groupId", source = "group")
     @Mapping (target = "courseId", source = "course")
-    public ReturnScheduleDto toDto(Schedule schedule);
+    public ScheduleDtoResponse toDto(Schedule schedule);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "group", ignore = true)
