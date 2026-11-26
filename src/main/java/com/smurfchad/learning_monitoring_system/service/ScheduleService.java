@@ -13,8 +13,9 @@ import com.smurfchad.learning_monitoring_system.dto.schedule.ScheduleDtoResponse
 import com.smurfchad.learning_monitoring_system.dto.schedule.ScheduleDto;
 import com.smurfchad.learning_monitoring_system.dto.schedule.ScheduleMapper;
 import com.smurfchad.learning_monitoring_system.exception.BusinessException;
-import com.smurfchad.learning_monitoring_system.exception.InvalidRequestException;
+
 import com.smurfchad.learning_monitoring_system.exception.ResourceNotFoundException;
+import com.smurfchad.learning_monitoring_system.exception.ValidationException;
 import com.smurfchad.learning_monitoring_system.model.Course;
 import com.smurfchad.learning_monitoring_system.model.Group;
 import com.smurfchad.learning_monitoring_system.model.Schedule;
@@ -38,7 +39,7 @@ public class ScheduleService {
     @Transactional
     public ScheduleDtoResponse addSchedule(ScheduleDto scheduleDto) {
         if (!scheduleDto.startTime().isBefore(scheduleDto.endTime())) {
-            throw new InvalidRequestException("Неправильное время");
+            throw new ValidationException("Неправильное время");
         }
         Schedule schedule = scheduleMapper.toEntity(scheduleDto);
         Group group = groupRepository.findById(scheduleDto.groupId())
@@ -75,7 +76,7 @@ public class ScheduleService {
     @Transactional
     public ScheduleDtoResponse updateSchedule(Long id, ScheduleDto scheduleDto) {
         if (!scheduleDto.startTime().isBefore(scheduleDto.endTime())) {
-            throw new InvalidRequestException("Неправильное время");
+            throw new ValidationException("Неправильное время");
         }
         Schedule schedule = scheduleRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Расписание с id " + id + " не найдено"));
@@ -112,9 +113,9 @@ public class ScheduleService {
         Page<Schedule> schedules = scheduleRepository.findAllByCourseTeacherId(id, pageable);
         return schedules.map(scheduleMapper::toDto);
     }
- 
-    @Transactional 
-    public int cleanOldSchedules(){
+
+    @Transactional
+    public int cleanOldSchedules() {
         LocalDateTime oneYearAgo = LocalDateTime.now().minusYears(1);
         return scheduleRepository.deleteAllSchedulesBefore(oneYearAgo);
     }

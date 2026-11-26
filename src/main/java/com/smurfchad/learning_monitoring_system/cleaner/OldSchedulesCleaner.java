@@ -15,10 +15,10 @@ public class OldSchedulesCleaner {
 
     private final ScheduleService scheduleService;
 
-    @Scheduled(cron = "${app.cleanup.app}")
+    @Scheduled(cron = "${app.cleanup.cron}")
     public void cleanOldSchedules() {
         int count = scheduleService.cleanOldSchedules();
-        log.info("удалено расписаний: " + count);
+        log.info("Удалено расписаний: " + count);
     }
 
 }
