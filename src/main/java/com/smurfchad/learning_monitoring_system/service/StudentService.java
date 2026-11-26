@@ -6,14 +6,15 @@ import java.util.Set;
 
 import java.util.stream.Collectors;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 
 import com.smurfchad.learning_monitoring_system.dto.student.ReturnStudentDto;
 import com.smurfchad.learning_monitoring_system.dto.student.StudentDto;
 import com.smurfchad.learning_monitoring_system.dto.student.StudentMapper;
+import com.smurfchad.learning_monitoring_system.exception.BusinessConflictException;
+import com.smurfchad.learning_monitoring_system.exception.InvalidRequestException;
+import com.smurfchad.learning_monitoring_system.exception.ResourceNotFoundException;
 import com.smurfchad.learning_monitoring_system.model.Group;
 import com.smurfchad.learning_monitoring_system.model.Student;
 import com.smurfchad.learning_monitoring_system.repository.GroupRepository;
@@ -36,7 +37,7 @@ public class StudentService {
                 .collect(Collectors.toSet());
         List<Group> foundGroups = groupRepository.findAllById(idsInSet);
         if (foundGroups.size() != idsInSet.size() || foundGroups.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+            throw new InvalidRequestException("Некорректные id групп");
         }
         foundGroups.forEach(student::addGroup);
         Student savedStudent = studentRepository.save(student);
@@ -45,21 +46,22 @@ public class StudentService {
 
     @Transactional
     public void deleteStudent(Long id) {
-        studentRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        studentRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Студент с id " + id + " не найден"));
         studentRepository.deleteById(id);
     }
 
     @Transactional
     public ReturnStudentDto updateStudent(Long id, StudentDto studentDto) {
         Student student = studentRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new ResourceNotFoundException("Студент с id " + id + " не найден"));
         student.setFirstName(studentDto.firstName());
         student.setLastName(studentDto.lastName());
         Set<Long> idsInSet = studentDto.groupIds().stream()
                 .collect(Collectors.toSet());
         List<Group> foundGroups = groupRepository.findAllById(idsInSet);
         if (foundGroups.size() != idsInSet.size() || foundGroups.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+            throw new InvalidRequestException("Некорректные id групп");
         }
         Set<Group> groupsCopy = new HashSet<>(student.getGroups());
         groupsCopy.forEach(student::removeGroup);
@@ -71,21 +73,21 @@ public class StudentService {
     @Transactional(readOnly = true)
     public ReturnStudentDto getStudent(Long id) {
         Student student = studentRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new ResourceNotFoundException("Студент с id " + id + " не найден"));
         return studentMapper.toDto(student);
     }
 
     @Transactional
     public ReturnStudentDto addStudentAtGroup(Long studentId, Long groupId) {
         Student student = studentRepository.findById(studentId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new ResourceNotFoundException("Студент с id " + studentId + " не найден"));
         Group group = groupRepository.findById(groupId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new ResourceNotFoundException("Группа с id " + groupId + " не найдена"));
         List<Long> ids = group.getStudents().stream()
                 .map(Student::getId)
                 .toList();
         if (ids.contains(student.getId())) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT);
+            throw new BusinessConflictException("Студент уже в группе");
         }
         student.addGroup(group);
         Student savedStudent = studentRepository.save(student);
@@ -95,17 +97,17 @@ public class StudentService {
     @Transactional
     public ReturnStudentDto removeStudentFromGroup(Long studentId, Long groupId) {
         Student student = studentRepository.findById(studentId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new ResourceNotFoundException("Студент с id " + studentId + " не найден"));
         Group group = groupRepository.findById(groupId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new ResourceNotFoundException("Группа с id " + groupId + " не найдена"));
         List<Long> ids = group.getStudents().stream()
                 .map(Student::getId)
                 .toList();
         if (!ids.contains(student.getId())) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+            throw new ResourceNotFoundException("Студент не найден в группе");
         }
         if (student.getGroups().size() == 1) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT);
+            throw new BusinessConflictException("Последняя группа у студента");
         }
         student.removeGroup(group);
         Student savedStudent = studentRepository.save(student);

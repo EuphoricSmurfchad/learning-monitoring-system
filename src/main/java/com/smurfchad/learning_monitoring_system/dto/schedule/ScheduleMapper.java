@@ -10,6 +10,8 @@ import com.smurfchad.learning_monitoring_system.model.Schedule;
 @Mapper (componentModel = "spring")
 public interface ScheduleMapper {
 
+    @Mapping (target = "groupId", source = "group")
+    @Mapping (target = "courseId", source = "course")
     public ReturnScheduleDto toDto(Schedule schedule);
 
     @Mapping(target = "id", ignore = true)

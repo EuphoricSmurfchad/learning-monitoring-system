@@ -1,13 +1,13 @@
 package com.smurfchad.learning_monitoring_system.service;
 
-import org.springframework.http.HttpStatus; 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 
 import com.smurfchad.learning_monitoring_system.dto.teacher.ReturnTeacherDto;
 import com.smurfchad.learning_monitoring_system.dto.teacher.TeacherDto;
 import com.smurfchad.learning_monitoring_system.dto.teacher.TeacherMapper;
+import com.smurfchad.learning_monitoring_system.exception.BusinessConflictException;
+import com.smurfchad.learning_monitoring_system.exception.ResourceNotFoundException;
 import com.smurfchad.learning_monitoring_system.model.Teacher;
 import com.smurfchad.learning_monitoring_system.repository.CourseRepository;
 import com.smurfchad.learning_monitoring_system.repository.TeacherRepository;
@@ -32,24 +32,24 @@ public class TeacherService {
     @Transactional(readOnly = true)
     public ReturnTeacherDto getTeacher(Long id) {
         Teacher teacher = teacherRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new ResourceNotFoundException("Учитель с id " + id + " не найден"));
         return teacherMapper.toDto(teacher);
     }
 
     @Transactional
     public void deleteTeacher(Long id) {
         teacherRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-        if (courseRepository.existsByTeacherId(id)){
-            throw new ResponseStatusException(HttpStatus.CONFLICT);
+                .orElseThrow(() -> new ResourceNotFoundException("Учитель с id " + id + " не найден"));
+        if (courseRepository.existsByTeacherId(id)) {
+            throw new BusinessConflictException("У учителя есть курсы");
         }
         teacherRepository.deleteById(id);
     }
 
-    @Transactional 
+    @Transactional
     public ReturnTeacherDto updateTeacher(Long id, TeacherDto teacherDto) {
         Teacher teacher = teacherRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new ResourceNotFoundException("Учитель с id " + id + " не найден"));
         teacher.setFirstName(teacherDto.firstName());
         teacher.setLastName(teacherDto.lastName());
         Teacher savedTeacher = teacherRepository.save(teacher);
