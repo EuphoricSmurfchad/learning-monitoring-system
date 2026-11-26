@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import com.smurfchad.learning_monitoring_system.dto.error.ErrorResponse;
+import com.smurfchad.learning_monitoring_system.dto.error.ExceptionDtoResponse;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -15,24 +15,24 @@ import lombok.extern.slf4j.Slf4j;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleResourceNotFound(ResourceNotFoundException ex) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorResponse(ex.getMessage()));
+    public ResponseEntity<ExceptionDtoResponse> handleResourceNotFound(ResourceNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ExceptionDtoResponse(ex.getMessage()));
 
     }
 
     @ExceptionHandler(BusinessException.class)
-    public ResponseEntity<ErrorResponse> handleBusinessConflict(BusinessException ex) {
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(new ErrorResponse(ex.getMessage()));
+    public ResponseEntity<ExceptionDtoResponse> handleBusinessConflict(BusinessException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(new ExceptionDtoResponse(ex.getMessage()));
     }
 
     @ExceptionHandler(InvalidRequestException.class)
-    public ResponseEntity<ErrorResponse> handleInvalidRequest(InvalidRequestException ex) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(ex.getMessage()));
+    public ResponseEntity<ExceptionDtoResponse> handleInvalidRequest(InvalidRequestException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ExceptionDtoResponse(ex.getMessage()));
     }
 
     @ExceptionHandler (ValidationException.class)
-    public ResponseEntity<ErrorResponse> handleInvalidValidation(ValidationException ex){
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(ex.getMessage()));
+    public ResponseEntity<ExceptionDtoResponse> handleInvalidValidation(ValidationException ex){
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ExceptionDtoResponse(ex.getMessage()));
     }
 
 }
