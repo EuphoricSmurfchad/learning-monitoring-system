@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import com.smurfchad.learning_monitoring_system.dto.error.ExceptionDtoResponse;
+import com.smurfchad.learning_monitoring_system.dto.exception.ExceptionDtoResponse;
 
 import lombok.extern.slf4j.Slf4j;
 
