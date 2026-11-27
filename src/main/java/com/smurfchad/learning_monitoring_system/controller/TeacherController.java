@@ -2,7 +2,6 @@ package com.smurfchad.learning_monitoring_system.controller;
 
 import java.net.URI;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,20 +10,19 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
+
 import org.springframework.web.bind.annotation.RestController;
 
 import com.smurfchad.learning_monitoring_system.dto.teacher.TeacherDtoResponse;
 import com.smurfchad.learning_monitoring_system.dto.teacher.TeacherDto;
 import com.smurfchad.learning_monitoring_system.service.TeacherService;
 
-
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
-@RestController 
-@RequestMapping ("/api/v1/teachers")
-@RequiredArgsConstructor 
+@RestController
+@RequestMapping("/api/v1/teachers")
+@RequiredArgsConstructor
 public class TeacherController {
 
     private final TeacherService teacherService;
@@ -42,14 +40,15 @@ public class TeacherController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<TeacherDtoResponse> updateTeacher(@PathVariable Long id, @Valid @RequestBody TeacherDto teacherDto) {
+    public ResponseEntity<TeacherDtoResponse> updateTeacher(@PathVariable Long id,
+            @Valid @RequestBody TeacherDto teacherDto) {
         TeacherDtoResponse returnTeacherDto = teacherService.updateTeacher(id, teacherDto);
         return ResponseEntity.ok(returnTeacherDto);
     }
 
     @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteTeacher(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteTeacher(@PathVariable Long id) {
         teacherService.deleteTeacher(id);
+        return ResponseEntity.noContent().build();
     }
 }
