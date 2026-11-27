@@ -1,0 +1,55 @@
+databaseChangeLog:
+  - changeSet:
+      id: 007-create-schedules
+      author: dev
+      changes:
+        - createTable:
+            tableName: schedules
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+              - column:
+                  name: group_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: course_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: start_time
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: end_time
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+
+        - addForeignKeyConstraint:
+            baseTableName: schedules
+            baseColumnNames: group_id
+            constraintName: fk_schedules_group
+            referencedTableName: groups
+            referencedColumnNames: id
+            onDelete: CASCADE
+
+        - addForeignKeyConstraint:
+            baseTableName: schedules
+            baseColumnNames: course_id
+            constraintName: fk_schedules_course
+            referencedTableName: courses
+            referencedColumnNames: id
+            onDelete: RESTRICT
+
+            
+        - sql:
+            sql: ALTER TABLE schedules ADD CONSTRAINT ck_schedules_time_order CHECK (end_time > start_time)

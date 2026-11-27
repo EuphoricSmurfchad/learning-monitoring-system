@@ -14,3 +14,6 @@ spring:
       hibernate:
         format_sql: true      # форматировать SQL для читаемости
         dialect: org.hibernate.dialect.PostgreSQLDialect
+app:
+ cleanup:
+  cron: "0 0 3 * * *" 
